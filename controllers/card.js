@@ -22,6 +22,9 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
     .then(card => {
+      if (!req.params.id) {
+        return res.status(400).send({message: "Переданы некорректные данные"})
+      }
       if (!card) {
         return res.status(404).send({ message: "Запрашиваемая карточка не найдена" })
       }
