@@ -8,12 +8,12 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
-  if (!name || !about) {
+  if (!name || !about || !avatar) {
     return res.status(400).send({ message: "Переданы некорректные данные" })
   }
   User.create({ name, about, avatar })
     .then(user => res.send({ data: user }))
-    .catch(err => res.status(500).send({ message: err.message }))
+    .catch(err => res.status(400).send({ message: "Переданы некорректные данные" }))
 }
 
 module.exports.getUserOnId = (req, res) => {

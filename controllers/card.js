@@ -14,8 +14,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner: req.user._id })
     .then(card => res.send({ data: card }))
     .catch(err => {
-      res.status(500).send({ message: err.message })
-
+      res.status(400).send({ message: "Переданы некорректные данные" })
     })
 }
 
