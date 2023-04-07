@@ -8,7 +8,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-process.on('uncaughtException',  (err) => {
+process.on('uncaughtException', (err) => {
   console.log(err);
 });
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb',
@@ -29,8 +29,14 @@ app.use((req, res, next) => {
 
 app.use('/users', require('./routes/user'))
 app.use('/cards', require('./routes/card'))
-
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`)
+app.use('*', (req, res) => {
+  res.status(404).send({ message: "Страница не найдена" })
 })
-//throw new Error("Ошибка!");
+
+app.listen(PORT, (err) => {
+  if (err) {
+    console.log("Error while starting server")
+  } else {
+    console.log(`App listening on port ${PORT}`)
+  }
+})

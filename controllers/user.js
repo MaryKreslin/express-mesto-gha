@@ -1,5 +1,4 @@
 const User = require('../models/user');
-const ValidationError = require('../utils/ValidationError');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
