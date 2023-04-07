@@ -25,7 +25,7 @@ module.exports.getUserOnId = (req, res) => {
       }
       res.send({ data: user })
     })
-    .catch(err => res.status(500).send({ message: err.message }))
+    .catch(err => res.status(400).send({ message: "Переданы некорректные данные" }))
 }
 
 module.exports.patchProfile = (req, res) => {
@@ -41,7 +41,7 @@ module.exports.patchProfile = (req, res) => {
       const newUser = { name: name, about: about, avatar: user.avatar }
       res.send({ data: newUser })
     })
-    .catch(err => res.status(500).send({ message: err.message }))
+    .catch(err => res.status(400).send({ message: "Переданы некорректные данные" }))
 }
 
 

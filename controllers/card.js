@@ -21,16 +21,14 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
-    .then(card => {
-      if (!req.params.id) {
-        return res.status(400).send({message: "Переданы некорректные данные"})
-      }
+    .then((card) => {
       if (!card) {
         return res.status(404).send({ message: "Запрашиваемая карточка не найдена" })
       }
-      res.send({ message: "Пост удален" })})
+      res.send({ message: "Пост удален" })
+    })
     .catch(err => {
-      res.status(500).send({ message: err.message })
+      res.status(400).send({ message: "Переданы некорректные данные" })
     })
 }
 
@@ -46,12 +44,12 @@ module.exports.putLike = (req, res) => {
       res.send({ data: card })
     })
     .catch(err => {
-      res.status(500).send({ message: err.message })
+      res.status(400).send({ message: "Переданы некорректные данные" })
     })
 }
 
 module.exports.deleteLike = (req, res) => {
-    Card.findByIdAndUpdate(req.params.id, {
+  Card.findByIdAndUpdate(req.params.id, {
     $pull: { likes: req.user._id }
   },
     { new: true })
@@ -61,6 +59,6 @@ module.exports.deleteLike = (req, res) => {
       } res.send({ data: card })
     })
     .catch(err => {
-      res.status(500).send({ message: err.message })
+      res.status(400).send({ message: "Переданы некорректные данные" })
     })
 }
