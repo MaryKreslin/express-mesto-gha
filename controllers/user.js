@@ -18,6 +18,7 @@ module.exports.createUser = (req, res) => {
 }
 
 module.exports.getUserOnId = (req, res) => {
+
   User.findById(req.params.id)
     .then(user => {
       if (!user) {
@@ -29,16 +30,16 @@ module.exports.getUserOnId = (req, res) => {
 }
 
 module.exports.patchProfile = (req, res) => {
-  const { newName, newAbout } = req.body;
-  if (!newName || !newAbout) {
+  const { name, about } = req.body;
+  if (!name || !about) {
     return res.status(400).send({ message: "Переданы некорректные данные" })
   }
-  User.findByIdAndUpdate(req.user._id, { name: newName, about: newAbout })
+  User.findByIdAndUpdate(req.user._id, { name: req.body.name, about: req.body.about })
     .then(user => {
       if (!user) {
         res.status(404).send({ message: "Запрашиваемый пользователь не найден" })
       }
-      const newUser = { name: newName, about: newAbout, avatar: user.avatar }
+      const newUser = { name: name, about: about, avatar: user.avatar }
       res.send({ data: newUser })
     })
     .catch(err => res.status(500).send({ message: err.message }))
@@ -46,16 +47,16 @@ module.exports.patchProfile = (req, res) => {
 
 
 module.exports.patchAvatar = (req, res) => {
-  const { newAvatar } = req.body;
-  if (!newAvatar) {
+  const { avatar } = req.body;
+  if (!avatar) {
     return res.status(400).send({ message: "Переданы некорректные данные" })
   }
-  User.findByIdAndUpdate(req.user._id, { avatar: newAvatar })
+  User.findByIdAndUpdate(req.user._id, { avatar: req.body.avatar })
     .then(user => {
       if (!user) {
         res.status(404).send({ message: "Запрашиваемый пользователь не найден" })
       }
-      const newUser = { name: user.name, about: user.about, avatar: newAvatar }
+      const newUser = { name: user.name, about: user.about, avatar: avatar }
       res.send({ data: newUser })
     })
     .catch(err => (res.status(500).send({ message: err.message }))
