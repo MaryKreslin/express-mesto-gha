@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const process = require('process');
 const bodyParser = require('body-parser');
 
 const { PORT = 3000 } = process.env;
@@ -7,7 +8,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException',  (err) => {
   console.log(err);
 });
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb',
@@ -28,7 +29,8 @@ app.use((req, res, next) => {
 
 app.use('/users', require('./routes/user'))
 app.use('/cards', require('./routes/card'))
-//app.use(express.static(path.join(__dirname, 'public')));
+
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`)
 })
+//throw new Error("Ошибка!");
