@@ -2,7 +2,8 @@
 logs
 *.log
 npm-debug.log*
-# Dependency directorynode_modules
+# dependencies
+/node_modules
 # Optional npm cache directory
 .npm
 # Optional REPL history
