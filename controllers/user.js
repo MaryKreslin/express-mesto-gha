@@ -69,6 +69,11 @@ module.exports.patchProfile = (req, res, next) => {
     })
     .then((user) => {
       const newUser = { name, about, avatar: user.avatar };
+      if (!name || !about) {
+        const error = new ValidationErr('Переданы некорректные данные');
+        res.status(error.statusCode).send({ message: error.message });
+        throw error;
+      }
       res.send({ data: newUser });
     })
     .catch((error) => {
@@ -96,6 +101,11 @@ module.exports.patchAvatar = (req, res, next) => {
     })
     .then((user) => {
       const newUser = { name: user.name, about: user.about, avatar };
+      if (!avatar) {
+        const error = new ValidationErr('Переданы некорректные данные');
+        res.status(error.statusCode).send({ message: error.message });
+        throw error;
+      }
       res.send({ data: newUser });
     })
     .catch((error) => {

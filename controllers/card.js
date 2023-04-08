@@ -23,7 +23,7 @@ module.exports.createCard = (req, res, next) => {
       return res.status(201).send({ data: card });
     })
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
         const err = new ValidationErr('Переданы некорректные данные');
         res.status(err.statusCode).send({ message: err.message });
         next(err);
@@ -46,6 +46,11 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .then(() => res.send({ message: 'Пост удален' }))
     .catch((error) => {
+      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
+        const err = new ValidationErr('Переданы некорректные данные');
+        res.status(err.statusCode).send({ message: err.message });
+        next(err);
+      }
       if (error.name === 'InternalServerError') {
         const err = new InternalServerErr('Ошибка на сервере');
         res.status(err.statusCode).send({ message: err.message });
