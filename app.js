@@ -28,9 +28,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', require('./src/routes/user'));
+app.use('/users', require('./routes/user'));
 
-app.use('/cards', require('./src/routes/card'));
+app.use('/cards', require('./routes/card'));
 
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Страница не найдена' });
