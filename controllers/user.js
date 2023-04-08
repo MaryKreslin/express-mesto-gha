@@ -25,7 +25,7 @@ module.exports.getUserOnId = (req, res) => {
       if (!user) {
         return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
       }
-      res.send({ data: user });
+      return res.send({ data: user });
     })
     .catch(() => {
       const ERROR_CODE = 400;
@@ -39,14 +39,14 @@ module.exports.patchProfile = (req, res) => {
     const ERROR_CODE = 400;
     return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
   }
-  User.findByIdAndUpdate(req.user._id, { name: name, about: about })
+  User.findByIdAndUpdate(req.user._id, { name: req.body.name, about: req.body.about })
     .then((user) => {
       if (!user) {
         const ERROR_CODE = 404;
-        res.status(ERROR_CODE).send({ message: 'Запрашиваемый пользователь не найден' });
+        return res.status(ERROR_CODE).send({ message: 'Запрашиваемый пользователь не найден' });
       }
       const newUser = { name, about, avatar: user.avatar };
-      res.send({ data: newUser });
+      return res.send({ data: newUser });
     })
     .catch(() => {
       const ERROR_CODE = 400;
@@ -63,10 +63,11 @@ module.exports.patchAvatar = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { avatar: req.body.avatar })
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+        const ERROR_CODE = 404;
+        return res.status(ERROR_CODE).send({ message: 'Запрашиваемый пользователь не найден' });
       }
       const newUser = { name: user.name, about: user.about, avatar };
-      res.send({ data: newUser });
+      return res.send({ data: newUser });
     })
     .catch(() => {
       const ERROR_CODE = 400;

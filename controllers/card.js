@@ -27,7 +27,7 @@ module.exports.deleteCard = (req, res) => {
         const ERROR_CODE = 404;
         return res.status(ERROR_CODE).send({ message: 'Запрашиваемая карточка не найдена' });
       }
-      res.send({ message: 'Пост удален' });
+      return res.send({ message: 'Пост удален' });
     })
     .catch(() => {
       const ERROR_CODE = 400;
@@ -47,7 +47,7 @@ module.exports.putLike = (req, res) => {
       if (!card) {
         return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
       }
-      res.send({ data: card });
+      return res.send({ data: card });
     })
     .catch(() => {
       const ERROR_CODE = 400;
@@ -66,7 +66,8 @@ module.exports.deleteLike = (req, res) => {
     .then((card) => {
       if (!card) {
         return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
-      } res.send({ data: card });
+      }
+      return res.send({ data: card });
     })
     .catch(() => {
       const ERROR_CODE = 400;
