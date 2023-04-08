@@ -72,6 +72,11 @@ module.exports.putLike = (req, res, next) => {
       res.send({ data: card });
     })
     .catch((error) => {
+      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
+        const err = new ValidationErr('Переданы некорректные данные');
+        res.status(err.statusCode).send({ message: err.message });
+        next(err);
+      }
       if (error.name === 'InternalServerError') {
         const err = new InternalServerErr('Ошибка на сервере');
         res.status(err.statusCode).send({ message: err.message });
@@ -98,6 +103,11 @@ module.exports.deleteLike = (req, res, next) => {
       res.send({ data: card });
     })
     .catch((error) => {
+      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
+        const err = new ValidationErr('Переданы некорректные данные');
+        res.status(err.statusCode).send({ message: err.message });
+        next(err);
+      }
       if (error.name === 'InternalServerError') {
         const err = new InternalServerErr('Ошибка на сервере');
         res.status(err.statusCode).send({ message: err.message });

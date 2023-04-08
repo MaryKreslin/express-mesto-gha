@@ -45,7 +45,7 @@ module.exports.getUserOnId = (req, res, next) => {
     })
     .then((user) => res.send({ data: user }))
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
         const err = new ValidationErr('Переданы некорректные данные');
         res.status(err.statusCode).send({ message: err.message });
         next(err);
@@ -72,7 +72,7 @@ module.exports.patchProfile = (req, res, next) => {
       res.send({ data: newUser });
     })
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
         const err = new ValidationErr('Переданы некорректные данные');
         res.status(err.statusCode).send({ message: err.message });
         next(err);
@@ -99,7 +99,7 @@ module.exports.patchAvatar = (req, res, next) => {
       res.send({ data: newUser });
     })
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
         const err = new ValidationErr('Переданы некорректные данные');
         res.status(err.statusCode).send({ message: err.message });
         next(err);
