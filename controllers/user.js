@@ -45,6 +45,11 @@ module.exports.getUserOnId = (req, res, next) => {
     })
     .then((user) => res.send({ data: user }))
     .catch((error) => {
+      if (error.name === 'ValidationError') {
+        const err = new ValidationErr('Переданы некорректные данные');
+        res.status(err.statusCode).send({ message: err.message });
+        next(err);
+      }
       if (error.name === 'InternalServerError') {
         const err = new InternalServerErr('Ошибка на сервере');
         res.status(err.statusCode).send({ message: err.message });
