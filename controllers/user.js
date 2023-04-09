@@ -16,14 +16,13 @@ module.exports.createUser = (req, res, next) => {
   User.create({ name, about, avatar })
     .then((user) => {
       if (!user) {
-        return next(new NotFoundErr('Объект не найден'));
+        next(new NotFoundErr('Объект не найден'));
       }
       return res.send({ data: user });
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        const err = new ValidationErr('Переданы некорректные данные');
-        next(err);
+        next(new ValidationErr('Переданы некорректные данные'));
       } else {
         next(error);
       }
@@ -34,15 +33,13 @@ module.exports.getUserOnId = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
-        const error = new NotFoundErr('Пользователь не найден');
-        throw error;
+        throw new NotFoundErr('Пользователь не найден');
       }
       res.send({ data: user });
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        const err = new ValidationErr('Переданы некорректные данные');
-        next(err);
+        next(new ValidationErr('Переданы некорректные данные'));
       } else {
         next(error);
       }
@@ -57,15 +54,13 @@ module.exports.patchProfile = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        const error = new NotFoundErr('Пользователь не найден');
-        throw error;
+        throw new NotFoundErr('Пользователь не найден');
       }
       res.send({ data: user });
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        const err = new ValidationErr('Переданы некорректные данные');
-        next(err);
+        next(new ValidationErr('Переданы некорректные данные'));
       } else {
         next(error);
       }
@@ -80,15 +75,13 @@ module.exports.patchAvatar = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        const error = new NotFoundErr('Пользователь не найден');
-        throw error;
+        throw new NotFoundErr('Пользователь не найден');
       }
       res.send({ data: user });
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        const err = new ValidationErr('Переданы некорректные данные');
-        next(err);
+        next(new ValidationErr('Переданы некорректные данные'));
       } else {
         next(error);
       }

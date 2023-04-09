@@ -17,15 +17,13 @@ module.exports.createCard = (req, res, next) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => {
       if (!card) {
-        const error = new NotFoundErr('Объект не найден');
-        throw error;
+        throw new NotFoundErr('Объект не найден');
       }
       return res.status(201).send({ data: card });
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        const err = new ValidationErr('Переданы некорректные данные');
-        next(err);
+        next(new ValidationErr('Переданы некорректные данные'));
       } else {
         next(error);
       }
@@ -36,15 +34,13 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.id)
     .then((card) => {
       if (!card) {
-        const error = new NotFoundErr('Объект не найден');
-        throw error;
+        throw new NotFoundErr('Объект не найден');
       }
       return res.send({ message: 'Пост удален' });
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        const err = new ValidationErr('Переданы некорректные данные');
-        next(err);
+        next(new ValidationErr('Переданы некорректные данные'));
       } else {
         next(error);
       }
@@ -59,15 +55,13 @@ module.exports.putLike = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        const error = new NotFoundErr('Объект не найден');
-        throw error;
+        throw new NotFoundErr('Объект не найден');
       }
       return res.send({ data: card });
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        const err = new ValidationErr('Переданы некорректные данные');
-        next(err);
+        next(new ValidationErr('Переданы некорректные данные'));
       } else {
         next(error);
       }
@@ -82,15 +76,13 @@ module.exports.deleteLike = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        const error = new NotFoundErr('Объект не найден');
-        throw error;
+        throw new NotFoundErr('Объект не найден');
       }
       return res.send({ data: card });
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        const err = new ValidationErr('Переданы некорректные данные');
-        next(err);
+        next(new ValidationErr('Переданы некорректные данные'));
       } else {
         next(error);
       }
