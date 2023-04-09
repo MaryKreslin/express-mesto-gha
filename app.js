@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const process = require('process');
 const bodyParser = require('body-parser');
 const NotFoundErr = require('./errors/notFoundErr');
+const handleErrors = require('./utils/handleErrors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -33,11 +34,11 @@ app.use('/users', require('./routes/user'));
 
 app.use('/cards', require('./routes/card'));
 
-app.use('*', (req, res, next) => {
-  const error = new NotFoundErr('Страница не найдена');
-  next(error);
-  res.status(error.statusCode).send({ message: error.message });
+app.use('*', () => {
+  throw new NotFoundErr('Страница не найдена');
 });
+
+app.use(handleErrors);
 
 app.listen(PORT, (err) => {
   if (err) {
