@@ -1,7 +1,6 @@
 const Card = require('../models/card');
 const ValidationErr = require('../errors/validationErr');
 const NotFoundErr = require('../errors/notFoundErr');
-const InternalServerErr = require('../errors/internalServerErr');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
@@ -24,15 +23,12 @@ module.exports.createCard = (req, res, next) => {
       return res.status(201).send({ data: card });
     })
     .catch((error) => {
-      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
+      if (error.name === 'ValidationError') {
         const err = new ValidationErr('Переданы некорректные данные');
         next(err);
+      } else {
+        next(error);
       }
-      if (error.name === 'InternalServerError') {
-        const err = new InternalServerErr('Ошибка на сервере');
-        next(err);
-      }
-      next(error);
     });
 };
 
@@ -46,15 +42,12 @@ module.exports.deleteCard = (req, res, next) => {
       return res.send({ message: 'Пост удален' });
     })
     .catch((error) => {
-      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
+      if (error.name === 'CastError') {
         const err = new ValidationErr('Переданы некорректные данные');
         next(err);
+      } else {
+        next(error);
       }
-      if (error.name === 'InternalServerError') {
-        const err = new InternalServerErr('Ошибка на сервере');
-        next(err);
-      }
-      next(error);
     });
 };
 
@@ -72,15 +65,12 @@ module.exports.putLike = (req, res, next) => {
       return res.send({ data: card });
     })
     .catch((error) => {
-      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
+      if (error.name === 'CastError') {
         const err = new ValidationErr('Переданы некорректные данные');
         next(err);
+      } else {
+        next(error);
       }
-      if (error.name === 'InternalServerError') {
-        const err = new InternalServerErr('Ошибка на сервере');
-        next(err);
-      }
-      next(error);
     });
 };
 
@@ -98,14 +88,11 @@ module.exports.deleteLike = (req, res, next) => {
       return res.send({ data: card });
     })
     .catch((error) => {
-      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
+      if (error.name === 'CastError') {
         const err = new ValidationErr('Переданы некорректные данные');
         next(err);
+      } else {
+        next(error);
       }
-      if (error.name === 'InternalServerError') {
-        const err = new InternalServerErr('Ошибка на сервере');
-        next(err);
-      }
-      next(error);
     });
 };

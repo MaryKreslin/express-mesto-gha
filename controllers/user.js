@@ -1,7 +1,6 @@
 const User = require('../models/user');
 const ValidationErr = require('../errors/validationErr');
 const NotFoundErr = require('../errors/notFoundErr');
-const InternalServerErr = require('../errors/internalServerErr');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -25,12 +24,9 @@ module.exports.createUser = (req, res, next) => {
       if (error.name === 'ValidationError') {
         const err = new ValidationErr('Переданы некорректные данные');
         next(err);
+      } else {
+        next(error);
       }
-      if (error.name === 'InternalServerError') {
-        const err = new InternalServerErr('Ошибка на сервере');
-        next(err);
-      }
-      next(error);
     });
 };
 
@@ -44,15 +40,12 @@ module.exports.getUserOnId = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((error) => {
-      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
+      if (error.name === 'CastError') {
         const err = new ValidationErr('Переданы некорректные данные');
         next(err);
+      } else {
+        next(error);
       }
-      if (error.name === 'InternalServerError') {
-        const err = new InternalServerErr('Ошибка на сервере');
-        next(err);
-      }
-      next(error);
     });
 };
 
@@ -70,15 +63,12 @@ module.exports.patchProfile = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((error) => {
-      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
+      if (error.name === 'CastError') {
         const err = new ValidationErr('Переданы некорректные данные');
         next(err);
+      } else {
+        next(error);
       }
-      if (error.name === 'InternalServerError') {
-        const err = new InternalServerErr('Ошибка на сервере');
-        next(err);
-      }
-      next(error);
     });
 };
 
@@ -96,14 +86,11 @@ module.exports.patchAvatar = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((error) => {
-      if ((error.name === 'ValidationError') || (error.name === 'CastError')) {
+      if (error.name === 'CastError') {
         const err = new ValidationErr('Переданы некорректные данные');
         next(err);
+      } else {
+        next(error);
       }
-      if (error.name === 'InternalServerError') {
-        const err = new InternalServerErr('Ошибка на сервере');
-        next(err);
-      }
-      next(error);
     });
 };

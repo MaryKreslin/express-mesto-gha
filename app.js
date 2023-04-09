@@ -34,8 +34,9 @@ app.use('/users', require('./routes/user'));
 
 app.use('/cards', require('./routes/card'));
 
-app.use('*', () => {
-  throw new NotFoundErr('Страница не найдена');
+app.use('*', (req, res, next) => {
+  const err = new NotFoundErr('Страница не найдена');
+  next(err);
 });
 
 app.use(handleErrors);
