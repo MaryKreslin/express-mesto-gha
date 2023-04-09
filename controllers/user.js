@@ -59,7 +59,7 @@ module.exports.patchProfile = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((error) => {
-      if (error.name === 'CastError') {
+      if (error.name === 'ValidationError') {
         next(new ValidationErr('Переданы некорректные данные'));
       } else {
         next(error);
@@ -80,7 +80,7 @@ module.exports.patchAvatar = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((error) => {
-      if (error.name === 'CastError') {
+      if (error.name === 'ValidationError') {
         next(new ValidationErr('Переданы некорректные данные'));
       } else {
         next(error);
