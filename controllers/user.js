@@ -9,30 +9,18 @@ const ConflictErr = require('../errors/conflictErr');
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  if (!validator.isEmail(email)) {
-    next(new UnauthorizedErr('Неправильные почта или пароль'));
-  }
-  User.findOne({ email }).select('+password')
+  return User.findByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        next(new UnauthorizedErr('Неправильные почта или пароль'));
+      const token = jwt.sign(
+        { _id: user._id },
+        'super-secret-key',
+        { expiresIn: '7d' });
+      if (!token) {
+        throw new UnauthorizedErr('Ошибка авторизации');
       }
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      if (!matched) {
-        next(new UnauthorizedErr('Неправильные почта или пароль'));
-      }
-      const token = jwt.sign({ _id: matched._id }, 'super-secret-key', { expiresIn: '7d' });
       res.send({ token })
     })
-    .catch((error) => {
-      if (error.name === 'CastError') {
-        next(new ValidationErr('Переданы некорректные данные'));
-      } else {
-        next(error);
-      }
-    });
+    .catch(next);
 };
 
 module.exports.getUsers = (req, res, next) => {
@@ -45,13 +33,20 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getCurentUser = (req, res, next) => {
-  console.log(req.user)
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        next(new NotFoundErr('Пользователь не найден'));
+        throw new NotFoundErr('Пользователь не найден');
       }
-      res.send({ data: user });
+      res.send({
+        data: {
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          email: user.email,
+          _id: user._id,
+        }
+      });
     })
     .catch(next);
 };
@@ -60,9 +55,6 @@ module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  if (!validator.isEmail(email)) {
-    next(new UnauthorizedErr('Неправильные почта или пароль'));
-  }
   User.findOne({ email })
     .then((userFind) => {
       if (!userFind) {
@@ -72,12 +64,20 @@ module.exports.createUser = (req, res, next) => {
           }))
           .then((user) => {
             if (!user) {
-              next(new NotFoundErr('Объект не найден'));
+              throw new NotFoundErr('Объект не найден');
             }
-            return res.send({ data: user });
+            res.send({
+              data: {
+                name: user.name,
+                about: user.about,
+                avatar: user.avatar,
+                email: user.email,
+                _id: user._id,
+              }
+            });
           });
       } else {
-        next(new ConflictErr('Пользователь уже существует!'));
+        throw new ConflictErr('Пользователь уже существует!');
       }
     })
     .catch((error) => {

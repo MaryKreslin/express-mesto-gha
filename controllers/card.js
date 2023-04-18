@@ -35,8 +35,9 @@ module.exports.deleteCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         throw new NotFoundErr('Объект не найден');
+      } else if (req.user._id === card.owner.toString()) {
+        return res.send({ message: 'Пост удален' });
       }
-      return res.send({ message: 'Пост удален' });
     })
     .catch((error) => {
       if (error.name === 'CastError') {
