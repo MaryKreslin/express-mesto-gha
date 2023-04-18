@@ -2,11 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const process = require('process');
 const bodyParser = require('body-parser');
+const { login, createUser } = require('./controllers/user');
+const userRouter = require('./routes/user');
+const cardRouter = require('./routes/card');
 const NotFoundErr = require('./errors/notFoundErr');
-const handleErrors = require('./utils/handleErrors');
+const handleErrors = require('./middlewares/handleErrors');
+const {auth }= require('./middlewares/auth')
 
 const { PORT = 3000 } = process.env;
 const app = express();
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -23,16 +28,15 @@ mongoose.connect(
   .then(() => console.log('Database connected!'))
   .catch((err) => console.log(err));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '642e8b1d324a5e9e6767b972',
-  };
-  next();
-});
+app.post('/signin', login);
 
-app.use('/users', require('./routes/user'));
+app.post('/signup', createUser);
 
-app.use('/cards', require('./routes/card'));
+app.use(auth);
+
+app.use('/users', userRouter);
+
+app.use('/cards', cardRouter);
 
 app.use('*', (req, res, next) => {
   const err = new NotFoundErr('Страница не найдена');
