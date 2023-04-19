@@ -3,9 +3,11 @@ const {
   getCards, createCard, deleteCard, putLike, deleteLike,
 } = require('../controllers/card');
 
+const {ValidateCard} = require ('../middlewares/validateCard');
+
 router.get('/', getCards);
 
-router.post('/', createCard);
+router.post('/', ValidateCard, createCard);
 
 router.delete('/:id', deleteCard);
 

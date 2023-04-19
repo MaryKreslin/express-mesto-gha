@@ -8,6 +8,7 @@ const userRouter = require('./routes/user');
 const cardRouter = require('./routes/card');
 const NotFoundErr = require('./errors/notFoundErr');
 const handleErrors = require('./middlewares/handleErrors');
+const {ValidateSignin, ValidateSignup} = require('./middlewares/validateUser')
 const { auth } = require('./middlewares/auth')
 
 const { PORT = 3000 } = process.env;
@@ -29,20 +30,8 @@ mongoose.connect(
   .then(() => console.log('Database connected!'))
   .catch((err) => console.log(err));
 
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().email({ minDomainSegments: 2, }),
-    password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
-  })
-}),
-  createUser);
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().email({ minDomainSegments: 2, }),
-    password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
-  })
-}),
-  login);
+app.post('/signup', ValidateSignup, createUser);
+app.post('/signin', ValidateSignin, login);
 
 //app.use(auth);
 
