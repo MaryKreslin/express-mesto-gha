@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const process = require('process');
 const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
 const { login, createUser } = require('./controllers/user');
 const userRouter = require('./routes/user');
 const cardRouter = require('./routes/card');
@@ -36,6 +37,8 @@ app.post('/signin', login);
 app.use('/users', auth, userRouter);
 
 app.use('/cards', auth, cardRouter);
+
+app.use(errors());
 
 app.use('*', (req, res, next) => {
   const err = new NotFoundErr('Страница не найдена');

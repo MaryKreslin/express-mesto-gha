@@ -55,30 +55,24 @@ module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  User.findOne({ email })
-    .then((userFind) => {
-      if (!userFind) {
-        bcrypt.hash(password, 10)
-          .then((hash) => User.create({
-            name, about, avatar, email, password: hash,
-          }))
-          .then((user) => {
-            if (!user) {
-              throw new NotFoundErr('Объект не найден');
-            }
-            res.send({
-              data: {
-                name: user.name,
-                about: user.about,
-                avatar: user.avatar,
-                email: user.email,
-                _id: user._id,
-              }
-            });
-          });
-      } else {
-        throw new ConflictErr('Пользователь уже существует!');
+
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundErr('Объект не найден');
       }
+      res.send({
+        data: {
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          email: user.email,
+          _id: user._id,
+        }
+      });
     })
     .catch((error) => {
       if (error.code === 11000) {
