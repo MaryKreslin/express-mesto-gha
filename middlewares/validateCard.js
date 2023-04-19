@@ -7,4 +7,10 @@ const ValidateCard = celebrate({
   })
 })
 
-module.exports = {ValidateCard}
+const ValidateCardId = celebrate({
+  params: Joi.object().keys({
+    _id: Joi.string().hex()
+  })
+})
+
+module.exports = { ValidateCard, ValidateCardId }
