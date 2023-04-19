@@ -64,7 +64,7 @@ module.exports.createUser = (req, res, next) => {
       if (!user) {
         throw new NotFoundErr('Объект не найден');
       }
-      res.send({
+      res.status(201).send({
         data: {
           name: user.name,
           about: user.about,
