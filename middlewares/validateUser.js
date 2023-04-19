@@ -19,7 +19,7 @@ const ValidateSignin = celebrate({
 
 const ValidateUserId = celebrate({
   params: Joi.object().keys({
-    _id: Joi.string().hex()
+    id: Joi.string().hex()
   })
 })
 
