@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const process = require('process');
 const bodyParser = require('body-parser');
-const { errors } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 const { login, createUser } = require('./controllers/user');
 const userRouter = require('./routes/user');
 const cardRouter = require('./routes/card');
@@ -29,8 +29,20 @@ mongoose.connect(
   .then(() => console.log('Database connected!'))
   .catch((err) => console.log(err));
 
-app.post('/signup', createUser);
-app.post('/signin', login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email({ minDomainSegments: 2, }),
+    password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+  })
+}),
+  createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email({ minDomainSegments: 2, }),
+    password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+  })
+}),
+  login);
 
 //app.use(auth);
 
