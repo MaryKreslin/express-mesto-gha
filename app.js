@@ -3,13 +3,10 @@ const mongoose = require('mongoose');
 const process = require('process');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const { login, createUser } = require('./controllers/user');
-const userRouter = require('./routes/user');
-const cardRouter = require('./routes/card');
 const NotFoundErr = require('./errors/notFoundErr');
 const handleErrors = require('./middlewares/handleErrors');
-const { ValidateSignin, ValidateSignup } = require('./middlewares/validateUser');
 const { auth } = require('./middlewares/auth');
+const routes = require('./routes/index');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -30,16 +27,11 @@ mongoose.connect(
   .then(() => console.log('Database connected!'))
   .catch((err) => console.log(err));
 
-app.post('/signup', ValidateSignup, createUser);
-app.post('/signin', ValidateSignin, login);
-
-app.use('/users', auth, userRouter);
-
-app.use('/cards', auth, cardRouter);
+app.use(routes);
 
 app.use(errors());
 
-app.use('*', (req, res, next) => {
+app.use('*', auth, (req, res, next) => {
   const err = new NotFoundErr('Страница не найдена');
   next(err);
 });

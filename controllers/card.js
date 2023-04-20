@@ -17,10 +17,7 @@ module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => {
-      if (!card) {
-        throw new NotFoundErr('Объект не найден');
-      }
-      return res.status(201).send({ data: card });
+      res.status(201).send({ data: card });
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
@@ -32,14 +29,17 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.id)
+  Card.findById(req.params.id)
     .then((card) => {
       if (!card) {
         throw new NotFoundErr('Объект не найден');
       } else if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
         throw new ForbiddenErr('Доступ запрещен!');
       } else {
-        return res.send({ message: 'Пост удален' });
+        card.deleteOne()
+          .then(() => {
+            res.send({ message: 'Пост удален' });
+          });
       }
     })
     .catch((error) => {
