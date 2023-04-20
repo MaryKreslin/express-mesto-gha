@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs');
-const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const ValidationErr = require('../errors/validationErr');
@@ -14,11 +13,12 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign(
         { _id: user._id },
         'super-secret-key',
-        { expiresIn: '7d' });
+        { expiresIn: '7d' },
+      );
       if (!token) {
         throw new UnauthorizedErr('Ошибка авторизации');
       }
-      res.send({ token })
+      res.send({ token });
     })
     .catch(next);
 };
@@ -45,7 +45,7 @@ module.exports.getCurentUser = (req, res, next) => {
           avatar: user.avatar,
           email: user.email,
           _id: user._id,
-        }
+        },
       });
     })
     .catch(next);
@@ -61,9 +61,6 @@ module.exports.createUser = (req, res, next) => {
       name, about, avatar, email, password: hash,
     }))
     .then((user) => {
-      if (!user) {
-        throw new NotFoundErr('Объект не найден');
-      }
       res.status(201).send({
         data: {
           name: user.name,
@@ -71,18 +68,16 @@ module.exports.createUser = (req, res, next) => {
           avatar: user.avatar,
           email: user.email,
           _id: user._id,
-        }
+        },
       });
     })
     .catch((error) => {
       if (error.code === 11000) {
         next(new ConflictErr('Пользователь уже существует!'));
+      } else if (error.name === 'ValidationError') {
+        next(new ValidationErr('Переданы некорректные данные'));
       } else {
-        if (error.name === 'ValidationError') {
-          next(new ValidationErr('Переданы некорректные данные'));
-        } else {
-          next(error);
-        }
+        next(error);
       }
     });
 };

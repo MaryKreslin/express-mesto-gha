@@ -5,7 +5,7 @@ module.exports.auth = (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization || !authorization.startsWith('Bearer ')) {
     next(new UnauthorizedErr('Неправильные почта или пароль'));
-    return
+    return;
   }
   const token = authorization.replace('Bearer ', '');
   let payload;
@@ -14,7 +14,7 @@ module.exports.auth = (req, res, next) => {
     payload = jwt.verify(token, 'super-secret-key');
   } catch (err) {
     next(new UnauthorizedErr('Необходима авторизация'));
-    return
+    return;
   }
   req.user = payload;
   next();

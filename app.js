@@ -2,14 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const process = require('process');
 const bodyParser = require('body-parser');
-const { celebrate, Joi, errors } = require('celebrate');
+const { errors } = require('celebrate');
 const { login, createUser } = require('./controllers/user');
 const userRouter = require('./routes/user');
 const cardRouter = require('./routes/card');
 const NotFoundErr = require('./errors/notFoundErr');
 const handleErrors = require('./middlewares/handleErrors');
-const {ValidateSignin, ValidateSignup} = require('./middlewares/validateUser')
-const { auth } = require('./middlewares/auth')
+const { ValidateSignin, ValidateSignup } = require('./middlewares/validateUser');
+const { auth } = require('./middlewares/auth');
 
 const { PORT = 3000 } = process.env;
 const app = express();

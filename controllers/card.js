@@ -37,7 +37,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (!card) {
         throw new NotFoundErr('Объект не найден');
       } else if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
-        throw new ForbiddenErr('Доступ запрещен!')
+        throw new ForbiddenErr('Доступ запрещен!');
       } else {
         return res.send({ message: 'Пост удален' });
       }
