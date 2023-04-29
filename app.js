@@ -6,6 +6,7 @@ const { errors } = require('celebrate');
 const NotFoundErr = require('./errors/notFoundErr');
 const handleErrors = require('./middlewares/handleErrors');
 const { auth } = require('./middlewares/auth');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const routes = require('./routes/index');
 
 const { PORT = 3000 } = process.env;
@@ -27,7 +28,11 @@ mongoose.connect(
   .then(() => console.log('Database connected!'))
   .catch((err) => console.log(err));
 
+app.use(requestLogger);
+
 app.use(routes);
+
+app.use(errorLogger);
 
 app.use(errors());
 
